@@ -4,8 +4,10 @@
       v-model="searchQuery"
       placeholder="Search for a city or state"
     />
-    <suggestions-list />
-    <Display :suggestions="cities" />
+    <suggestions-list
+      v-if="filteredCities.length > 0"
+      :suggestions="filteredCities"
+    />
   </div>
 </template>
 
@@ -22,52 +24,41 @@ export default {
   data() {
     return {
       searchQuery: "",
-      cities: [], // set cities  as array type
-      country: "", // set country  as string type
-      populationCounts: [], //  set populationCounts  as array type
+      cities: [], // This will store all cities fetched from the API
       isLoading: false,
     };
   },
+  mounted() {
+    this.fetchAllCities(); // Fetch all cities when component mounts
+  },
+  computed: {
+    filteredCities() {
+      // Filter cities based on the search query
+      return this.cities.filter((city) =>
+        city.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    },
+  },
   methods: {
-    fetchCities() {
-      if (!this.searchQuery) {
-        this.cities = [];
-        alert("Please enter a name");
-        return;
-      }
+    fetchAllCities() {
       this.isLoading = true;
       axios
-        .post(
-          "https://countriesnow.space/api/v0.1/countries/population/cities",
-          {
-            city: this.searchQuery,
-          }
-        )
+        .get("https://countriesnow.space/api/v0.1/countries")
         .then((response) => {
-          if (response.data && response.data.data) {
-            this.cities = [
-              {
-                city: response.data.data.city,
-                country: response.data.data.country,
-                populationCounts: response.data.data.populationCounts,
-              },
-            ];
-            console.log("Cities data updated:", this.cities);
-          } else {
-            console.error("No data received");
-            alert("No data available for the provided city.");
-          }
+          this.cities = response.data.data.reduce((acc, country) => {
+            return acc.concat(country.cities); // Flatten the city names into a single array
+          }, []);
           this.isLoading = false;
         })
         .catch((error) => {
-          console.error("Error fetching city data:", error);
+          console.error("Error fetching all cities:", error);
           this.isLoading = false;
         });
     },
   },
   watch: {
-    searchQuery() {
-      this.fetchCities();
+    searchQuery(newVal, oldVal) {
+      // Optionally, you could fetch specific city data here if needed
     },
   },
 };
