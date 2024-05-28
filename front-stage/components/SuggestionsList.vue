@@ -1,24 +1,64 @@
-<!-- SuggestionsList.vue -->
 <template>
-  <ul v-if="suggestions.length > 0" class="suggestions-list">
-    <li v-for="(suggestion, index) in suggestions" :key="index">
+  <ul class="suggestions-list">
+    <li
+      v-for="(suggestion, index) in suggestions"
+      :key="index"
+      @click="selectCity(suggestion)"
+    >
       {{ suggestion }}
     </li>
   </ul>
-  <p v-else>No matching cities found</p>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   props: {
-    suggestions: {
-      type: Array,
-      default: () => [],
+    suggestions: Array,
+  },
+  data() {
+    return {
+      allCities: [],
+    };
+  },
+  mounted() {
+    this.fetchCities();
+  },
+  methods: {
+    fetchCities() {
+      axios
+        .get("https://countriesnow.space/api/v0.1/countries")
+        .then((response) => {
+          this.allCities = response.data.data.reduce((acc, country) => {
+            acc.push(...country.cities);
+            return acc;
+          }, []);
+        })
+        .catch((error) => {
+          console.error("Error fetching cities:", error);
+        });
+    },
+    selectCity(city) {
+      this.$emit("city-selected", city); // Emitting an event with the city as a payload
     },
   },
 };
 </script>
 
 <style>
-/* Add your styles here */
+.all-cities {
+  padding: 20px;
+}
+.all-cities h1 {
+  text-align: center;
+}
+.all-cities ul {
+  list-style: none;
+  padding: 0;
+}
+.all-cities li {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
 </style>
