@@ -1,0 +1,47 @@
+name: Deploy front-page to Cloudflare Pages
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - front-stage/**
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - frontstage/**
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        working-directory: ./frontstage
+        run: npm install
+
+      - name: Build
+        env:
+
+        working-directory: ./frontstage
+        run: npx nuxt generate
+
+      - name: Install Wrangler
+        run: npm install -g wrangler
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUD_FLARE_DEPLOY_API_TOKEN }}
+          accountId: ${{ secrets.CLOUD_FLARE_DEPLOY_ACCOUNT_ID }}
+          command: pages deploy ./frontstage/dist --project-name=front-end-test-2024 --commit-dirty=true
+          quiet: false
