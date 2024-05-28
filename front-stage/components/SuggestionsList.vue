@@ -1,50 +1,54 @@
 <template>
-  <ul v-if="suggestions.length > 0" class="suggestions-list">
-    <li v-for="(suggestion, index) in suggestions" :key="index">
-      <span class="name"
-        >{{ suggestion.city }}, {{ suggestion.state }},{{
-          suggestion.data.country
-        }}</span
-      >
-      <span class="population">{{
-        suggestion.population | numberWithCommas
-      }}</span>
-    </li>
-  </ul>
-  <p v-else class="no-results">No results found</p>
+  <div class="all-cities">
+    <ul>
+      <li v-for="(city, index) in allCities" :key="index">{{ city }}</li>
+    </ul>
+  </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
-  props: {
-    suggestions: {
-      type: Array,
-      default: () => [],
-    },
+  data() {
+    return {
+      allCities: [],
+    };
   },
-  filters: {
-    numberWithCommas(x) {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  mounted() {
+    this.fetchCities();
+  },
+  methods: {
+    fetchCities() {
+      axios
+        .get("https://countriesnow.space/api/v0.1/countries")
+        .then((response) => {
+          this.allCities = response.data.data.reduce((acc, country) => {
+            acc.push(...country.cities);
+            return acc;
+          }, []);
+        })
+        .catch((error) => {
+          console.error("Error fetching cities:", error);
+        });
     },
   },
 };
 </script>
 
 <style>
-.suggestions-list {
+.all-cities {
+  padding: 20px;
+}
+.all-cities h1 {
+  text-align: center;
+}
+.all-cities ul {
   list-style: none;
   padding: 0;
-  margin: 0;
 }
-.suggestions-list li {
+.all-cities li {
   padding: 10px;
-  border-bottom: 1px solid #eee;
-  display: flex;
-  justify-content: space-between;
-}
-.no-results {
-  text-align: center;
-  padding: 20px;
-  color: #666;
+  border-bottom: 1px solid #ccc;
 }
 </style>

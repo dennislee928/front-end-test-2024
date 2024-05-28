@@ -4,7 +4,8 @@
       v-model="searchQuery"
       placeholder="Search for a city or state"
     />
-    <suggestions-list :suggestions="cities" />
+    <suggestions-list />
+    <Display :suggestions="cities" />
   </div>
 </template>
 
@@ -21,15 +22,17 @@ export default {
   data() {
     return {
       searchQuery: "",
-      cities: [],
+      cities: [], // set cities  as array type
+      country: "", // set country  as string type
+      populationCounts: [], //  set populationCounts  as array type
       isLoading: false,
     };
   },
   methods: {
     fetchCities() {
       if (!this.searchQuery) {
-        this.cities = []; // 清空cities array
-        alert("please enter a name");
+        this.cities = [];
+        alert("Please enter a name");
         return;
       }
       this.isLoading = true;
@@ -41,8 +44,19 @@ export default {
           }
         )
         .then((response) => {
-          // 假設有程式資料回傳
-          this.cities = [response.data.data]; // Adjust according to actual response structure
+          if (response.data && response.data.data) {
+            this.cities = [
+              {
+                city: response.data.data.city,
+                country: response.data.data.country,
+                populationCounts: response.data.data.populationCounts,
+              },
+            ];
+            console.log("Cities data updated:", this.cities);
+          } else {
+            console.error("No data received");
+            alert("No data available for the provided city.");
+          }
           this.isLoading = false;
         })
         .catch((error) => {
@@ -53,13 +67,11 @@ export default {
   },
   watch: {
     searchQuery() {
-      // This watcher will call fetchCities whenever searchQuery changes
       this.fetchCities();
     },
   },
 };
 </script>
-
 <style>
 .search-component {
   max-width: 600px;
