@@ -15,6 +15,16 @@
       :visible="overlayVisible"
       @close="closeOverlay"
     />
+    <div v-if="noResultsVisible" class="no-results-overlay">
+      <v-card :loading="isLoading" outlined>
+        <v-card-title
+          >We currently don't have the information of this city.</v-card-title
+        >
+        <v-card-actions>
+          <v-btn color="red" @click="closeNoResults">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </div>
   </div>
 </template>
 
@@ -37,6 +47,7 @@ export default {
       isLoading: false,
       cityData: {},
       overlayVisible: false,
+      noResultsVisible: false,
       majorCities: [
         "Tokyo",
         "Jakarta",
@@ -57,14 +68,16 @@ export default {
   computed: {
     filteredCities() {
       if (!this.searchQuery) {
-        // Return major cities when there's no input
         return this.majorCities;
       }
       const query = this.searchQuery.toLowerCase();
-      return this.cities
+      let result = this.cities
         .filter((cityName) => cityName.toLowerCase().includes(query))
-        .sort() // Sorts the cities alphabetically
-        .slice(0, 15); // Limits the array to the first 15 elements
+        .sort()
+        .slice(0, 15);
+      this.noResultsVisible =
+        result.length === 0 && this.searchQuery.length > 0; // Automatically manage no results overlay visibility
+      return result;
     },
   },
   methods: {
@@ -127,6 +140,9 @@ export default {
       console.log("Closing overlay");
       this.overlayVisible = false;
     },
+    closeNoResults() {
+      this.noResultsVisible = false; // Manually handle closing of the no results overlay
+    },
   },
   watch: {
     searchQuery(newVal, oldVal) {
@@ -166,5 +182,25 @@ export default {
 /* Additional styles for other elements */
 .suggestions-list {
   padding-top: 20px; /* Add space between the search input and the list */
+}
+
+.no-results-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+
+.no-results-overlay p {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 </style>
