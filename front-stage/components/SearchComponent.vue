@@ -1,6 +1,7 @@
 <template>
   <div class="search-component">
     <search-input
+      class="sticky-search"
       v-model="searchQuery"
       placeholder="Search for a city or state"
     />
@@ -36,6 +37,18 @@ export default {
       isLoading: false,
       cityData: {},
       overlayVisible: false,
+      majorCities: [
+        "Tokyo",
+        "Jakarta",
+        "Guangzhou",
+        "Manila",
+        "Shanghai",
+        "Seoul",
+        "Bangkok",
+        "Buenos Aires",
+        "Kyoto",
+        "Jerusalem",
+      ],
     };
   },
   mounted() {
@@ -43,10 +56,15 @@ export default {
   },
   computed: {
     filteredCities() {
+      if (!this.searchQuery) {
+        // Return major cities when there's no input
+        return this.majorCities;
+      }
       const query = this.searchQuery.toLowerCase();
-      return this.cities.filter((cityName) =>
-        cityName.toLowerCase().includes(query)
-      );
+      return this.cities
+        .filter((cityName) => cityName.toLowerCase().includes(query))
+        .sort() // Sorts the cities alphabetically
+        .slice(0, 15); // Limits the array to the first 15 elements
     },
   },
   methods: {
@@ -123,8 +141,30 @@ export default {
 </script>
 <style>
 .search-component {
-  max-width: 600px;
+  width: 90%; /* Default width for mobile devices */
   margin: auto;
   padding: 20px;
+  position: relative; /* Ensures the sticky positioning context is set */
+}
+
+/* Media query for non-mobile screens */
+@media (min-width: 600px) {
+  .search-component {
+    max-width: 600px; /* Maximum width for non-mobile devices */
+  }
+}
+
+.sticky-search {
+  position: -webkit-sticky; /* For Safari */
+  position: sticky;
+  top: 0; /* Set the sticky top offset */
+  background: white; /* Ensure the background is not transparent */
+  z-index: 10; /* Make sure it's above other content */
+  padding: 10px 0; /* Optional: Add padding to maintain layout */
+}
+
+/* Additional styles for other elements */
+.suggestions-list {
+  padding-top: 20px; /* Add space between the search input and the list */
 }
 </style>

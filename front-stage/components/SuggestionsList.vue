@@ -1,10 +1,10 @@
 <template>
   <ul class="suggestions-list">
-    <li v-for="(cityName, index) in suggestions" :key="index">
+    <li class="cities" v-for="(cityName, index) in suggestions" :key="index">
       {{ cityName }}
-      <v-btn prepend-icon="$vuetify" variant="tonal">
-        <button @click="selectCity(cityName)">Show this city</button>
-      </v-btn>
+      <v-btn class="button" variant="tonal" @click="selectCity(cityName)"
+        >Show this city</v-btn
+      >
     </li>
   </ul>
 </template>
@@ -46,6 +46,18 @@ export default {
 </script>
 
 <style>
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
 .all-cities {
   padding: 20px;
 }
@@ -59,5 +71,13 @@ export default {
 .all-cities li {
   padding: 10px;
   border-bottom: 1px solid #ccc;
+}
+.cities {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  margin: 10px;
 }
 </style>

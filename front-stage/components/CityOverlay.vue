@@ -1,13 +1,20 @@
 <template>
   <div class="overlay" v-if="visible">
     <div class="overlay-content">
-      <h2>{{ cityData.city }}, {{ cityData.country }}</h2>
-      <ul>
-        <li v-for="pop in cityData.populationCounts" :key="pop.year">
-          {{ pop.year }}: {{ pop.value | numberWithCommas }} ({{ pop.sex }})
-        </li>
-      </ul>
-      <button @click="close">Close</button>
+      <v-card :loading="isLoading" outlined>
+        <v-card-title>{{ cityData.city }}</v-card-title>
+        <v-card-subtitle>{{ cityData.country }}</v-card-subtitle>
+        <v-card-text>
+          <div class="clarify">Population info</div>
+          <div v-for="pop in cityData.populationCounts" :key="pop.year">
+            {{ pop.year }}: {{ pop.value | numberWithCommas }} ({{ pop.sex }})
+          </div>
+        </v-card-text>
+        <!-- Adding v-card-actions for the close button -->
+        <v-card-actions>
+          <v-btn color="red" @click="close">Close</v-btn>
+        </v-card-actions>
+      </v-card>
     </div>
   </div>
 </template>
@@ -68,5 +75,8 @@ button {
 .overlay {
   border-width: 5px;
   border-style: solid;
+}
+.clarify {
+  text-decoration: underline;
 }
 </style>
