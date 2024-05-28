@@ -10,7 +10,7 @@ on:
     branches:
       - main
     paths:
-      - frontstage/**
+      - front-stage/**
   workflow_dispatch:
 
 jobs:
@@ -26,11 +26,11 @@ jobs:
           node-version: "18"
 
       - name: Install dependencies
-        working-directory: ./frontstage
+        working-directory: ./front-stage
         run: npm install
 
       - name: Build
-        working-directory: ./frontstage
+        working-directory: ./front-stage
         run: npx nuxt generate
 
       - name: Install Wrangler
@@ -41,5 +41,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUD_FLARE_DEPLOY_API_TOKEN }}
           accountId: ${{ secrets.CLOUD_FLARE_DEPLOY_ACCOUNT_ID }}
-          command: pages deploy ./frontstage/dist --project-name=front-end-test-2024 --commit-dirty=true
+          command: pages deploy ./front-stage/dist --project-name=front-end-test-2024 --commit-dirty=true
           quiet: false
