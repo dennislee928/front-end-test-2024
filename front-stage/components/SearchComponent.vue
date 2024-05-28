@@ -9,7 +9,8 @@
       :suggestions="filteredCities"
       @city-selected="fetchCityData"
     />
-    <city-overlay
+
+    <CityOverlay
       :cityData="cityData"
       :visible="overlayVisible"
       @close="closeOverlay"
@@ -43,9 +44,9 @@ export default {
   },
   computed: {
     filteredCities() {
-      // Filter cities based on the search query
-      return this.cities.filter((city) =>
-        city.toLowerCase().includes(this.searchQuery.toLowerCase())
+      const query = this.searchQuery.toLowerCase();
+      return this.cities.filter((cityName) =>
+        cityName.toLowerCase().includes(query)
       );
     },
   },
@@ -56,30 +57,36 @@ export default {
         .get("https://countriesnow.space/api/v0.1/countries")
         .then((response) => {
           this.cities = response.data.data.reduce((acc, country) => {
-            return acc.concat(country.cities); // Flatten the city names into a single array
+            // Only add city names, verify they are indeed strings
+            const cityNames = country.cities.filter(
+              (name) => typeof name === "string"
+            );
+            return acc.concat(cityNames);
           }, []);
+          console.log("All cities fetched (post-process):", this.cities);
           this.isLoading = false;
         })
         .catch((error) => {
           console.error("Error fetching all cities:", error);
           this.isLoading = false;
         });
-    },
-    //search single city
-    fetchCityData(city) {
+    }, //search single city
+    fetchCityData(cityName) {
+      if (typeof cityName !== "string") {
+        console.error("Expected city name as a string, received:", cityName);
+        return;
+      }
       this.isLoading = true;
       axios
         .post(
           "https://countriesnow.space/api/v0.1/countries/population/cities",
-          { city: city }
+          { city: cityName }
         )
         .then((response) => {
           if (response.data && response.data.data) {
-            // Assuming the API returns data as shown in your example
-            this.cities = [response.data.data]; // Wrapping in an array to match expected format
-            console.log("Fetched data for city:", this.cities);
+            this.cityData = response.data.data;
             this.overlayVisible = true;
-            console.log("overlaystatus:" + this.overlayVisible);
+            console.log("Fetched data for city:", cityName);
           } else {
             console.error("No data received");
             alert("No data available for the provided city.");

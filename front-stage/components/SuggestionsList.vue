@@ -21,9 +21,7 @@ export default {
   mounted() {
     this.fetchCities();
   },
-  computed() {
-    updateCity();
-  },
+
   methods: {
     fetchCities() {
       axios
@@ -38,8 +36,9 @@ export default {
           console.error("Error fetching cities:", error);
         });
     },
-    selectCity(suggestion) {
-      this.$emit("city-selected", suggestion);
+    selectCity(cityObject) {
+      // Emit only the city name, ensuring it's a string
+      this.$emit("city-selected", cityObject.city);
     },
     updateCity(city) {
       this.$emit("city-showed", city);

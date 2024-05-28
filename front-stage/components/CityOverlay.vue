@@ -32,6 +32,11 @@ export default {
       this.$emit("close");
     },
   },
+  watch: {
+    visible(newVal) {
+      console.log("Overlay visibility changed to:", newVal); // This should log true when expected
+    },
+  },
 };
 </script>
 
