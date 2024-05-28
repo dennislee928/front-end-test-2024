@@ -142,16 +142,12 @@ export default {
     },
     closeNoResults() {
       this.noResultsVisible = false; // Manually handle closing of the no results overlay
+
+      this.searchQuery = "";
     },
   },
   watch: {
-    searchQuery(newVal, oldVal) {
-      //  if (newVal && newVal !== oldVal) {
-      //  this.fetchCityData();
-      //console.log("fetched!"); // Fetch data whenever searchQuery changes
-      //}
-      // Optionally, you could fetch specific city data here if needed
-    },
+    searchQuery(newVal, oldVal) {},
   },
 };
 </script>
