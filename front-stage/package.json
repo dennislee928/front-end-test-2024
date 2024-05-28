@@ -10,9 +10,16 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@mdi/font": "^7.4.47",
+    "antd": "^5.17.4",
     "axios": "^1.7.2",
     "nuxt": "^3.11.2",
     "vue": "^3.4.27",
     "vue-router": "^4.3.2"
+  },
+  "devDependencies": {
+    "@ant-design-vue/nuxt": "^1.4.1",
+    "vite-plugin-vuetify": "^2.0.3",
+    "vuetify": "^3.6.7"
   }
 }

@@ -64,4 +64,9 @@ export default {
 button {
   margin-top: 20px;
 }
+
+.overlay {
+  border-width: 5px;
+  border-style: solid;
+}
 </style>

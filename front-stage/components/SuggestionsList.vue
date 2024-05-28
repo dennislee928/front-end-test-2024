@@ -2,7 +2,9 @@
   <ul class="suggestions-list">
     <li v-for="(cityName, index) in suggestions" :key="index">
       {{ cityName }}
-      <button @click="selectCity(cityName)">Show this city</button>
+      <v-btn prepend-icon="$vuetify" variant="tonal">
+        <button @click="selectCity(cityName)">Show this city</button>
+      </v-btn>
     </li>
   </ul>
 </template>

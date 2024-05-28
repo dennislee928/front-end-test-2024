@@ -1,6 +1,8 @@
 <template>
   <div>
-    <SearchComponent />
+    <v-app>
+      <SearchComponent />
+    </v-app>
   </div>
 </template>
 <script>
