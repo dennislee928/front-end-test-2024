@@ -1,15 +1,11 @@
 <template>
   <ul class="suggestions-list">
-    <li
-      v-for="(suggestion, index) in suggestions"
-      :key="index"
-      @click="selectCity(suggestion)"
-    >
+    <li v-for="(suggestion, index) in suggestions" :key="index">
       {{ suggestion }}
+      <button @click="selectCity(suggestion)">show this city</button>
     </li>
   </ul>
 </template>
-
 <script>
 import axios from "axios";
 
@@ -25,6 +21,9 @@ export default {
   mounted() {
     this.fetchCities();
   },
+  computed() {
+    updateCity();
+  },
   methods: {
     fetchCities() {
       axios
@@ -39,8 +38,12 @@ export default {
           console.error("Error fetching cities:", error);
         });
     },
-    selectCity(city) {
-      this.$emit("city-selected", city); // Emitting an event with the city as a payload
+    selectCity(suggestion) {
+      this.$emit("city-selected", suggestion);
+    },
+    updateCity(city) {
+      this.$emit("city-showed", city);
+      console.log("updated ");
     },
   },
 };

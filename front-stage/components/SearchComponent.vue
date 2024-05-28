@@ -7,12 +7,12 @@
     <suggestions-list
       v-if="filteredCities.length > 0"
       :suggestions="filteredCities"
-      @city-selected="updateSearchQuery"
+      @city-selected="fetchCityData"
     />
     <city-overlay
       :cityData="cityData"
       :visible="overlayVisible"
-      @close="overlayVisible = false"
+      @close="closeOverlay"
     />
   </div>
 </template>
@@ -66,16 +66,12 @@ export default {
         });
     },
     //search single city
-    fetchCityData() {
-      if (!this.searchQuery) {
-        alert("Please enter a city name");
-        return;
-      }
+    fetchCityData(city) {
       this.isLoading = true;
       axios
         .post(
           "https://countriesnow.space/api/v0.1/countries/population/cities",
-          { city: this.searchQuery }
+          { city: city }
         )
         .then((response) => {
           if (response.data && response.data.data) {
@@ -102,13 +98,18 @@ export default {
       console.log("city=" + city);
       // Update searchQuery when a city is selected from the list
     },
+    //close the overlay
+    closeOverlay() {
+      console.log("Closing overlay");
+      this.overlayVisible = false;
+    },
   },
   watch: {
     searchQuery(newVal, oldVal) {
-      if (newVal && newVal !== oldVal) {
-        this.fetchCityData();
-        console.log("fetched!"); // Fetch data whenever searchQuery changes
-      }
+      //  if (newVal && newVal !== oldVal) {
+      //  this.fetchCityData();
+      //console.log("fetched!"); // Fetch data whenever searchQuery changes
+      //}
       // Optionally, you could fetch specific city data here if needed
     },
   },
