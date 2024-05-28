@@ -1,11 +1,12 @@
 <template>
   <ul class="suggestions-list">
-    <li v-for="(suggestion, index) in suggestions" :key="index">
-      {{ suggestion }}
-      <button @click="selectCity(suggestion)">show this city</button>
+    <li v-for="(cityName, index) in suggestions" :key="index">
+      {{ cityName }}
+      <button @click="selectCity(cityName)">Show this city</button>
     </li>
   </ul>
 </template>
+
 <script>
 import axios from "axios";
 
@@ -15,34 +16,28 @@ export default {
   },
   data() {
     return {
-      allCities: [],
+      allCities: [], // Maybe redundant if you already receive cities as suggestions
     };
   },
   mounted() {
     this.fetchCities();
   },
-
   methods: {
     fetchCities() {
       axios
         .get("https://countriesnow.space/api/v0.1/countries")
         .then((response) => {
           this.allCities = response.data.data.reduce((acc, country) => {
-            acc.push(...country.cities);
-            return acc;
+            return acc.concat(country.cities); // Assume country.cities are strings
           }, []);
+          this.$emit("update-suggestions", this.allCities); // Emit an event to update suggestions in the parent
         })
         .catch((error) => {
           console.error("Error fetching cities:", error);
         });
     },
-    selectCity(cityObject) {
-      // Emit only the city name, ensuring it's a string
-      this.$emit("city-selected", cityObject.city);
-    },
-    updateCity(city) {
-      this.$emit("city-showed", city);
-      console.log("updated ");
+    selectCity(cityName) {
+      this.$emit("city-selected", cityName); // Emit the city name directly
     },
   },
 };

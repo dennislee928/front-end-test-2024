@@ -5,7 +5,6 @@
       placeholder="Search for a city or state"
     />
     <suggestions-list
-      v-if="filteredCities.length > 0"
       :suggestions="filteredCities"
       @city-selected="fetchCityData"
     />
