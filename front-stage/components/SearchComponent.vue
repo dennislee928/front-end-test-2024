@@ -1,10 +1,11 @@
 <template>
   <div class="search-component">
     <search-input
-      class="sticky-search"
-      v-model="searchQuery"
+      :searchQuery="searchQuery"
+      @update:searchQuery="(value) => (searchQuery = value)"
       placeholder="Search for a city or state"
     />
+
     <suggestions-list
       :suggestions="filteredCities"
       @city-selected="fetchCityData"
@@ -141,9 +142,8 @@ export default {
       this.overlayVisible = false;
     },
     closeNoResults() {
-      this.noResultsVisible = false; // Manually handle closing of the no results overlay
-
-      this.searchQuery = "";
+      this.noResultsVisible = false;
+      this.searchQuery = ""; // This resets the searchQuery
     },
   },
   watch: {
