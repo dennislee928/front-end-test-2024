@@ -16,11 +16,11 @@
       :visible="overlayVisible"
       @close="closeOverlay"
     />
+
     <div v-if="noResultsVisible" class="no-results-overlay">
       <v-card :loading="isLoading" outlined>
-        <v-card-title
-          >We currently don't have the information of this city.</v-card-title
-        >
+        <v-card-title>We currently don't have </v-card-title>
+        <v-card-title>the information of this city</v-card-title>
         <v-card-actions>
           <v-btn color="red" @click="closeNoResults">Close</v-btn>
         </v-card-actions>
