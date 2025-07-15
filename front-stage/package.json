@@ -11,11 +11,15 @@
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
+
     "antd": "^5.17.4",
-    "axios": "^1.7.2",
+    "axios": "^1.10.0",
+
     "nuxt": "^3.11.2",
+
     "vue": "^3.4.27",
     "vue-router": "^4.5.1"
+
   },
   "devDependencies": {
     "@ant-design-vue/nuxt": "^1.4.1",
